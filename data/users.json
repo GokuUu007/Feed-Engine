@@ -1,0 +1,8 @@
+[
+  { "id": "u_kabir", "name": "Kabir Shah", "role": "member", "bio": "Club lead" },
+  { "id": "u_ananya", "name": "Ananya Rao", "role": "member", "bio": "Casual member" },
+  { "id": "u_ravi", "name": "Ravi Menon", "role": "member", "bio": "Open-source enthusiast" },
+  { "id": "u_priya", "name": "Priya Nair", "role": "member", "bio": "Designer turned developer" },
+  { "id": "u_arjun", "name": "Arjun Verma", "role": "member", "bio": "Backend wizard" },
+  { "id": "u_joseph", "name": "Ms. Joseph", "role": "moderator", "bio": "Community moderator" }
+]

@@ -1,0 +1,32 @@
+[
+  {
+    "id": "p_1",
+    "authorId": "u_kabir",
+    "text": "Hackathon registrations close Friday! #codingclub",
+    "createdAt": "2026-11-15T09:30:00Z",
+    "likes": ["u_ananya"],
+    "comments": [],
+    "hidden": false,
+    "hiddenReason": null
+  },
+  {
+    "id": "p_2",
+    "authorId": "u_ravi",
+    "text": "Pushed my first open-source fix today.",
+    "createdAt": "2026-11-16T14:10:00Z",
+    "likes": [],
+    "comments": [],
+    "hidden": false,
+    "hiddenReason": null
+  },
+  {
+    "id": "p_3",
+    "authorId": "u_priya",
+    "text": "Sketching the new club poster. Thoughts? #codingclub",
+    "createdAt": "2026-11-17T08:00:00Z",
+    "likes": ["u_kabir", "u_ravi"],
+    "comments": [],
+    "hidden": false,
+    "hiddenReason": null
+  }
+]
