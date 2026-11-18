@@ -112,3 +112,45 @@ h1, h2, h3 {
   background: var(--bg-raised);
   border-color: var(--accent);
 }
+
+.like-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-btn);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  margin-top: 8px;
+}
+
+.like-btn.is-liked,
+.like-btn[aria-pressed="true"] {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+
+.comment-list {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 8px;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.comment-list li {
+  padding: 6px 0;
+  border-top: 1px solid var(--border);
+}
+
+.comment-form {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.comment-form input {
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  border-radius: var(--radius-btn);
+}

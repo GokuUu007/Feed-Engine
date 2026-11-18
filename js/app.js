@@ -1,10 +1,10 @@
-import { seedFromFiles,get,KEYS } from "./storage.js";
-import { setSession } from "./session.js";
+import { seedFromFiles, get, KEYS, resetDemo } from './storage.js';
+import { setSession } from './session.js';
 
-await seedFromFiles()
+await seedFromFiles();
 
-const users=get(KEYS.USERS)
-const list=document.getElementById('user-list')
+const users = get(KEYS.USERS);
+const list = document.getElementById('user-list');
 
 users.forEach(user => {
   const button = document.createElement('button');
@@ -16,3 +16,5 @@ users.forEach(user => {
   });
   list.appendChild(button);
 });
+
+document.getElementById('reset-btn').addEventListener('click', resetDemo);
