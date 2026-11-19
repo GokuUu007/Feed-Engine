@@ -5,6 +5,9 @@ const handlers={}
 export function subscribe(type, handler) {
   if (!handlers[type]) handlers[type] = [];
   handlers[type].push(handler);
+  return () => {
+    handlers[type] = handlers[type].filter(registered => registered !== handler);
+  };
 }
 
 // Run every function registered for this event's type.
