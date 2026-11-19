@@ -654,6 +654,24 @@ h1, h2, h3 {
   margin-bottom: 20px;
 }
 
+.moderation-status:empty {
+  display: none;
+}
+
+.moderation-status:not(:empty) {
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-btn);
+  background: var(--bg-raised);
+  color: var(--text-primary);
+}
+
+.moderation-archive {
+  padding-top: 20px;
+  margin-top: 28px;
+  border-top: 1px solid var(--border);
+}
+
 .moderation-reason-form {
   display: grid;
   gap: 10px;

@@ -31,7 +31,7 @@
   <main class="container py-4 social-layout app-main">
     <header class="moderation-header">
       <h1 class="h3">Moderation</h1>
-      <p class="text-secondary">Hide posts temporarily or delete any post with a required reason. Hidden posts can be restored.</p>
+      <p class="text-secondary">Hide posts temporarily or delete any post with a required reason. Hidden posts can be restored; deleted posts move to the audit list.</p>
     </header>
     <form id="moderation-reason-form" class="moderation-reason-form" hidden>
       <label id="moderation-reason-label" for="moderation-reason">Reason for hiding this post</label>
@@ -41,8 +41,13 @@
         <button id="cancel-hide" class="btn btn-outline-secondary" type="button">Cancel</button>
       </div>
     </form>
-    <p id="moderation-status" class="visually-hidden" aria-live="polite"></p>
+    <p id="moderation-status" class="moderation-status" role="status" aria-live="polite"></p>
     <ul id="moderation-list" class="post-list" aria-label="Posts for moderation" aria-live="polite"></ul>
+    <section class="moderation-archive" aria-labelledby="removed-posts-heading">
+      <h2 id="removed-posts-heading" class="h4">Deleted posts (audit)</h2>
+      <p class="text-secondary">Post content is removed; the author, moderator, time, and reason are retained here.</p>
+      <ul id="removed-posts-list" class="post-list" aria-label="Deleted post audit records"></ul>
+    </section>
   </main>
 
   <script type="module" src="js/layout.js"></script>
