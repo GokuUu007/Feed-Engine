@@ -1,5 +1,7 @@
 import { get, KEYS, seedFromFiles } from './storage.js';
 import { getCurrentUser } from './session.js';
+import { subscribe } from './eventBus.js';
+import { createUserAvatar } from './avatar.js';
 
 await seedFromFiles();
 const currentUser = getCurrentUser();
@@ -54,10 +56,22 @@ if (currentUser && main) {
   const currentName = document.createElement('p');
   currentName.className = 'rail-trainer-name';
   currentName.textContent = currentUser.name;
+  const trainerIdentity = document.createElement('div');
+  trainerIdentity.className = 'rail-trainer-identity';
+  let trainerAvatar = createUserAvatar(currentUser, { className: 'user-avatar-rail' });
+  trainerIdentity.append(trainerAvatar, currentName);
   const currentRole = document.createElement('p');
   currentRole.className = 'text-secondary mb-0';
   currentRole.textContent = currentUser.role;
-  currentTrainerCard.append(currentHeading, currentName, currentRole);
+  currentTrainerCard.append(currentHeading, trainerIdentity, currentRole);
+
+  function updateTrainerAvatar() {
+    const updatedUser = (get(KEYS.USERS) || []).find(user => user.id === currentUser.id);
+    if (!updatedUser) return;
+    const updatedAvatar = createUserAvatar(updatedUser, { className: 'user-avatar-rail' });
+    trainerAvatar.replaceWith(updatedAvatar);
+    trainerAvatar = updatedAvatar;
+  }
 
   const trainersCard = document.createElement('section');
   trainersCard.className = 'rail-card';
@@ -86,4 +100,11 @@ if (currentUser && main) {
   bottomNavigation.setAttribute('aria-label', 'Main navigation');
   links.forEach(link => bottomNavigation.append(makeLink(link, 'bottom-tab')));
   document.body.append(bottomNavigation);
+
+  subscribe('profile:changed', event => {
+    if (event.userId === currentUser.id) updateTrainerAvatar();
+  });
+  window.addEventListener('storage', event => {
+    if (event.key === KEYS.USERS) updateTrainerAvatar();
+  });
 }

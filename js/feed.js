@@ -10,7 +10,7 @@ const user = getCurrentUser();
 if (!user) {
   window.location.href = 'index.html';
 } else {
-  const users = get(KEYS.USERS) || [];
+  let users = get(KEYS.USERS) || [];
   const greeting = document.getElementById('greeting');
   const postList = document.getElementById('post-list');
   const textarea = document.getElementById('composer-text');
@@ -105,7 +105,12 @@ if (!user) {
   subscribe('posts:changed', renderFeed);
   subscribe('post:deleted', renderFeed);
   window.addEventListener('storage', event => {
-    if (event.key === KEYS.POSTS || event.key === KEYS.FOLLOWS) renderFeed();
+    if (event.key === KEYS.USERS) {
+      users = get(KEYS.USERS) || [];
+      renderFeed();
+    } else if (event.key === KEYS.POSTS || event.key === KEYS.FOLLOWS) {
+      renderFeed();
+    }
   });
   renderFeed();
 

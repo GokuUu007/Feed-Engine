@@ -2,6 +2,7 @@ import { get, set, KEYS, seedFromFiles } from './storage.js';
 import { getCurrentUser, clearSession } from './session.js';
 import { publish, subscribe } from './eventBus.js';
 import { renderPostCard } from './postView.js';
+import { createUserAvatar, encodeProfilePicture } from './avatar.js';
 
 await seedFromFiles();
 const currentUser = getCurrentUser();
@@ -14,17 +15,42 @@ if (!currentUser) {
     window.location.href = 'index.html';
   });
 
-  const users = get(KEYS.USERS) || [];
   const profileId = new URLSearchParams(window.location.search).get('id') || currentUser.id;
-  const profileUser = users.find(user => user.id === profileId);
   const summary = document.getElementById('profile-summary');
   const postsList = document.getElementById('profile-posts');
+  const profileStatus = document.getElementById('profile-status');
+  let users = get(KEYS.USERS) || [];
+  let profileUser = users.find(user => user.id === profileId);
 
   if (!profileUser) {
     summary.textContent = 'Trainer profile not found.';
     postsList.hidden = true;
   } else {
+    function saveProfilePicture(profilePicture) {
+      const actor = getCurrentUser();
+      if (!actor || actor.id !== profileId) {
+        throw new Error('You can only change your own profile picture.');
+      }
+
+      const latestUsers = get(KEYS.USERS) || [];
+      const index = latestUsers.findIndex(user => user.id === profileId);
+      if (index === -1) throw new Error('This trainer profile no longer exists.');
+      latestUsers[index] = { ...latestUsers[index], profilePicture };
+      if (!set(KEYS.USERS, latestUsers)) {
+        throw new Error('Unable to save the profile picture.');
+      }
+      publish({ type: 'profile:changed', userId: profileId });
+    }
+
     function renderProfile() {
+      users = get(KEYS.USERS) || [];
+      profileUser = users.find(user => user.id === profileId);
+      if (!profileUser) {
+        summary.textContent = 'Trainer profile not found.';
+        postsList.hidden = true;
+        return;
+      }
+
       const follows = get(KEYS.FOLLOWS) || {};
       const following = Array.isArray(follows[currentUser.id]) ? follows[currentUser.id] : [];
       const profileFollowing = Array.isArray(follows[profileUser.id]) ? follows[profileUser.id] : [];
@@ -55,6 +81,7 @@ if (!currentUser) {
       followingCountValue.textContent = String(profileFollowing.length);
       followingCount.append(followingCountValue, ' following');
       stats.append(followers, followingCount);
+      information.className = 'profile-information';
       information.append(heading, role, bio, stats);
 
       const controls = document.createElement('div');
@@ -81,8 +108,59 @@ if (!currentUser) {
           renderProfile();
         });
         controls.append(followButton);
+      } else {
+        const pictureHelp = document.createElement('span');
+        pictureHelp.className = 'text-secondary small';
+        pictureHelp.textContent = 'JPEG, PNG, or WebP up to 5 MB. Saved in this browser.';
+        controls.append(pictureHelp);
+
+        const uploadLabel = document.createElement('label');
+        uploadLabel.className = 'btn btn-sm btn-outline-secondary profile-picture-upload';
+        uploadLabel.append(document.createTextNode(
+          profileUser.profilePicture ? 'Change picture' : 'Add picture'
+        ));
+
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/jpeg,image/png,image/webp';
+        fileInput.className = 'visually-hidden';
+        fileInput.setAttribute('aria-label', 'Choose a profile picture');
+        fileInput.addEventListener('change', async () => {
+          const file = fileInput.files?.[0];
+          if (!file) return;
+          try {
+            saveProfilePicture(await encodeProfilePicture(file));
+            profileStatus.textContent = 'Profile picture saved.';
+          } catch (error) {
+            profileStatus.textContent = error.message;
+          } finally {
+            fileInput.value = '';
+          }
+        });
+        uploadLabel.append(fileInput);
+        controls.append(uploadLabel);
+
+        if (profileUser.profilePicture) {
+          const removePictureButton = document.createElement('button');
+          removePictureButton.className = 'btn btn-sm btn-outline-secondary';
+          removePictureButton.type = 'button';
+          removePictureButton.textContent = 'Remove picture';
+          removePictureButton.addEventListener('click', () => {
+            try {
+              saveProfilePicture(null);
+              profileStatus.textContent = 'Profile picture removed.';
+            } catch (error) {
+              profileStatus.textContent = error.message;
+            }
+          });
+          controls.append(removePictureButton);
+        }
       }
-      summary.append(information, controls);
+      summary.append(
+        createUserAvatar(profileUser, { className: 'user-avatar-profile' }),
+        information,
+        controls
+      );
 
       const profilePosts = (get(KEYS.POSTS) || [])
         .filter(post => post.authorId === profileUser.id && !post.hidden)
@@ -101,8 +179,11 @@ if (!currentUser) {
     subscribe('posts:changed', renderProfile);
     subscribe('post:deleted', renderProfile);
     subscribe('follows:changed', renderProfile);
+    subscribe('profile:changed', event => {
+      if (event.userId === profileId) renderProfile();
+    });
     window.addEventListener('storage', event => {
-      if ([KEYS.POSTS, KEYS.FOLLOWS].includes(event.key)) renderProfile();
+      if ([KEYS.POSTS, KEYS.FOLLOWS, KEYS.USERS].includes(event.key)) renderProfile();
     });
     renderProfile();
   }

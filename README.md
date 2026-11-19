@@ -14,7 +14,9 @@ Serve this directory over HTTP (for example, with VS Code Live Server or `python
 - Receive notifications for likes, comments, follows, and `@Name` mentions. For names with spaces, mention the name without spaces (for example, `@AshKetchum`).
 - Browse all or unread notifications, mark them read, and open the related post or profile.
 - Start the activity simulator from the feed; it generates posts, likes, comments, and follows every 3–8 seconds until paused.
-- Moderators can hide posts with a reason and restore them from the moderation page; hide/unhide and delete actions validate ownership or role in code.
+- Moderators can hide posts with a reason and restore them from the moderation page; moderation and deletion actions enforce role checks in code.
+- Moderators can delete another trainer's post with a required reason; removed content is replaced with an audit record and is no longer visible in the feed.
+- Trainers can add or remove a profile picture from their own profile. Pictures are cropped, compressed, and stored locally in the browser.
 - Authenticated pages use a three-column desktop shell and a single-column mobile layout with bottom navigation.
 - Switch between dark and light themes; the selection is saved across pages.
 

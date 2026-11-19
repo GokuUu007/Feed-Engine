@@ -14,7 +14,7 @@ if (!currentUser) {
     window.location.href = 'index.html';
   });
 
-  const users = get(KEYS.USERS) || [];
+  let users = get(KEYS.USERS) || [];
   const postId = new URLSearchParams(window.location.search).get('id');
   const detail = document.getElementById('post-detail');
   const commentsList = document.getElementById('comments-list');
@@ -86,7 +86,12 @@ if (!currentUser) {
   subscribe('posts:changed', renderPage);
   subscribe('post:deleted', renderPage);
   window.addEventListener('storage', event => {
-    if (event.key === KEYS.POSTS) renderPage();
+    if (event.key === KEYS.USERS) {
+      users = get(KEYS.USERS) || [];
+      renderPage();
+    } else if (event.key === KEYS.POSTS) {
+      renderPage();
+    }
   });
   renderPage();
 }

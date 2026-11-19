@@ -31,13 +31,13 @@
   <main class="container py-4 social-layout app-main">
     <header class="moderation-header">
       <h1 class="h3">Moderation</h1>
-      <p class="text-secondary">Review community posts. Hide posts with a reason; restore them when appropriate.</p>
+      <p class="text-secondary">Hide posts temporarily or delete any post with a required reason. Hidden posts can be restored.</p>
     </header>
     <form id="moderation-reason-form" class="moderation-reason-form" hidden>
-      <label for="moderation-reason">Reason for hiding this post</label>
+      <label id="moderation-reason-label" for="moderation-reason">Reason for hiding this post</label>
       <textarea id="moderation-reason" class="form-control" rows="2" maxlength="280" required></textarea>
       <div class="moderation-form-actions">
-        <button class="btn btn-accent" type="submit">Hide post</button>
+        <button id="moderation-submit" class="btn btn-accent" type="submit">Hide post</button>
         <button id="cancel-hide" class="btn btn-outline-secondary" type="button">Cancel</button>
       </div>
     </form>

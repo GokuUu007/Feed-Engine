@@ -1,6 +1,7 @@
 import { get, set, KEYS } from './storage.js';
 import { getCurrentUser } from './session.js';
 import { publish } from './eventBus.js';
+import { createUserAvatar } from './avatar.js';
 
 function formatText(text) {
   const fragment = document.createDocumentFragment();
@@ -43,7 +44,10 @@ export function renderPostCard(post, currentUser, users) {
   const authorLink = document.createElement('a');
   authorLink.className = 'post-author';
   authorLink.href = `profile.html?id=${encodeURIComponent(post.authorId)}`;
-  authorLink.textContent = author?.name || 'Unknown trainer';
+  authorLink.append(
+    createUserAvatar(author, { className: 'user-avatar-post' }),
+    document.createTextNode(author?.name || 'Unknown trainer')
+  );
 
   const time = document.createElement('time');
   time.className = 'post-time';
@@ -129,8 +133,12 @@ export function renderComment(comment, users) {
 
   const author = users.find(user => user.id === comment.authorId);
   const authorLink = document.createElement('a');
+  authorLink.className = 'comment-author';
   authorLink.href = `profile.html?id=${encodeURIComponent(comment.authorId)}`;
-  authorLink.textContent = author?.name || 'Unknown trainer';
+  authorLink.append(
+    createUserAvatar(author, { className: 'user-avatar-post' }),
+    document.createTextNode(author?.name || 'Unknown trainer')
+  );
 
   const time = document.createElement('time');
   time.dateTime = comment.createdAt;
